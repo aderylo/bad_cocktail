@@ -16,3 +16,7 @@ engine = create_engine(db_url)
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
+
+
+def clean_up_db():
+    SQLModel.metadata.drop_all(engine)

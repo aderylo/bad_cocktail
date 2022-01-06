@@ -2,7 +2,7 @@ import os
 import re
 
 import pandas as pd
-from db import create_db_and_tables, engine
+from db import clean_up_db, create_db_and_tables, engine
 from models import Cocktail, Glassware, Ingredient
 from sqlmodel import Session
 
@@ -17,6 +17,7 @@ def dowload_dataset_from_kaggle() -> pd.DataFrame:
 
 
 def save_data(data: pd.DataFrame):
+    clean_up_db()
     create_db_and_tables()
     with Session(engine) as session:
 
@@ -51,6 +52,7 @@ def save_data(data: pd.DataFrame):
                 .filter(Cocktail.id == drink_dict["idDrink"])
                 .first()
             )
+
             if not drink:
                 drink = Cocktail(
                     id=drink_dict["idDrink"],
@@ -58,7 +60,9 @@ def save_data(data: pd.DataFrame):
                     instructions=drink_dict["strInstructions"],
                     category=drink_dict["strCategory"],
                     phot=drink_dict["strDrinkThumb"],
-                    glassId=glasses[glasses["name"] == drink_dict["strGlass"]]["id"][0],
+                    glassId=glasses[glasses["name"] == drink_dict["strGlass"]][
+                        "id"
+                    ].values.tolist()[0],
                 )
                 session.add(drink)
 
