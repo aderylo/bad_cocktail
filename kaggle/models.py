@@ -1,7 +1,6 @@
-from typing import Optional
+from typing import List, Optional
 
-from sqlalchemy.sql.schema import UniqueConstraint
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 
 class Cocktail(SQLModel, table=True):
@@ -11,7 +10,8 @@ class Cocktail(SQLModel, table=True):
     instructions: str
     category: str
     photo: Optional[str]
-    glassId: int
+    glassId: int = Field(foreign_key="glassware.id")
+    glass: "Glassware" = Relationship(back_populates="cocktails")
 
 
 class Glassware(SQLModel, table=True):
@@ -19,6 +19,7 @@ class Glassware(SQLModel, table=True):
     id: int = Field(primary_key=True)
     name: str
     photo: Optional[str]
+    cocktails: List[Cocktail] = Relationship(back_populates="glass")
 
 
 class Garnish(SQLModel, table=True):
