@@ -3,7 +3,7 @@ import re
 
 import pandas as pd
 from db import clean_up_db, create_db_and_tables, engine
-from models import Cocktail, Glassware, Ingredient
+from models import Cocktail, Glassware, Ingredient, CocktailIngredient
 from sqlmodel import Session
 
 
@@ -45,6 +45,7 @@ def save_data(data: pd.DataFrame):
 
         session.commit()
         glasses = pd.read_sql_table("glassware", engine)
+        ingredients = pd.read_sql_table("ingredients", engine)
 
         for drink_dict in data.T.to_dict().values():
             drink = (
@@ -65,6 +66,19 @@ def save_data(data: pd.DataFrame):
                     ].values.tolist()[0],
                 )
                 session.add(drink)
+
+            for col in data.columns:
+                if re.match("strIngredient.*", col) and str(drink_dict[col]) != "nan":
+                    index = re.findall("[0-9]+$", col)[-1]
+                    assosiation = CocktailIngredient(cocktail_id=drink_dict["idDrink"],
+                                                     ingredient_id=ingredients.loc[ingredients["name"] == drink_dict[col]][
+                                                     "id"
+                                                     ].values.tolist()[0],
+                                                     measure=drink_dict["strMeasure" + str(
+                                                         index)]
+                                                     )
+
+                    session.add(assosiation)
 
         session.commit()
 
