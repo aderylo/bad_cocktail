@@ -9,7 +9,7 @@ class CocktailIngredient(SQLModel, table=True):
     cocktail_id: int = Field(foreign_key="cocktails.id", primary_key=True)
     ingredient_id: int = Field(foreign_key="ingredients.id", primary_key=True)
     measure: Optional[str]
-    cocktail: "Cocktail" = Relationship(back_populates="ingredient")
+    cocktail: "Cocktail" = Relationship(back_populates="ingredients")
     ingrident: "Ingredient" = Relationship(back_populates="cocktails")
 
 
@@ -18,8 +18,7 @@ class Ingredient(SQLModel, table=True):
     id: int = Field(primary_key=True)
     name: str
     price: Optional[int]
-    cocktails: List[CocktailIngredient] = Relationship(
-        back_populates="ingrident")
+    cocktails: List[CocktailIngredient] = Relationship(back_populates="ingrident")
 
 
 class Cocktail(SQLModel, table=True):
@@ -31,8 +30,7 @@ class Cocktail(SQLModel, table=True):
     photo: Optional[str]
     glassId: int = Field(foreign_key="glassware.id")
     glass: "Glassware" = Relationship(back_populates="cocktails")
-    ingredients: List[CocktailIngredient] = Relationship(
-        back_populates="cocktail")
+    ingredients: List[CocktailIngredient] = Relationship(back_populates="cocktail")
 
 
 class Glassware(SQLModel, table=True):
