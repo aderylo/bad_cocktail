@@ -1,10 +1,13 @@
 #!/home/students/mismap/a/ad432952/public_html/api/bin/python3
 
 import json
+import cgitb
 
+cgitb.enable()
 from db import Session
 from flask import Flask, request
 from models import Ingredient
+
 
 app = Flask(__name__)
 

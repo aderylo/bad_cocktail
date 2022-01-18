@@ -13,6 +13,7 @@ POSTGRES_PORT = os.getenv("POSTGRES_PORT")
 DB_NAME = "bd"
 
 db_url = f"postgresql://{POSTGRES_USER}:{POSTGRES_PWD}@{POSTGRES_HOST}/{DB_NAME}"
+db_url = f"postgresql://scott:tiger@lkdb/bd"
 
 engine = create_engine(db_url)
 Session = scoped_session(sessionmaker(bind=engine))
