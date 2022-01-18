@@ -2,6 +2,9 @@ import os
 
 from sqlalchemy import create_engine
 from sqlmodel import SQLModel
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import sessionmaker
+
 
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PWD = os.getenv("POSTGRES_PWD")
@@ -12,6 +15,7 @@ DB_NAME = "bd"
 db_url = f"postgresql://{POSTGRES_USER}:{POSTGRES_PWD}@{POSTGRES_HOST}/{DB_NAME}"
 
 engine = create_engine(db_url)
+Session = scoped_session(sessionmaker(bind=engine))
 
 
 def create_db_and_tables():
