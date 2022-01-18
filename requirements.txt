@@ -7,4 +7,5 @@ flake8>=3.7.9, <4.0
 isort>=4.3.21, <5.0
 pre-commit>=2.8.2
 kaggle
-psycopg2-binary
+psycopg2-binary>=2.9.3
+flask>=2.0.2
