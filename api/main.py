@@ -24,12 +24,10 @@ def get_ingredients():
 
 @app.route("/cocktails")
 def get_cocktails_by_ingredients():
-    ids = request.args.get("ids")
-    count = request.args.get("count")
-    ids = [int(id) for id in ids.split(",")]
-    max_add = int(count)
-    total = len(ids) + max_add
-    result = []
+    max_add = int(request.args.get("count"))
+    ingredient_ids = [int(id) for id in request.args.get("ids").split(",")]
+    total = len(ingredient_ids) + max_add
+    drink_ids = []
 
     query = """
     WITH CTE1 AS (
@@ -49,10 +47,10 @@ def get_cocktails_by_ingredients():
     ORDER BY listed_ingredients desc;
     """
 
-    for quantity in range(len(ids)):
-        combinations = itertools.combinations(set(ids), quantity + 1)
-        for subset in combinations:
-            with Session(engine) as session:
+    with Session(engine) as session:
+        for quantity in range(len(ingredient_ids)):
+            combinations = itertools.combinations(set(ingredient_ids), quantity + 1)
+            for subset in combinations:
                 values = session.execute(
                     query,
                     {
@@ -61,11 +59,10 @@ def get_cocktails_by_ingredients():
                         "essential": tuple(subset),
                     },
                 )
-                result = result + [value["cocktail_id"] for value in values]
+                drink_ids = drink_ids + [value["cocktail_id"] for value in values]
 
-    result = set(result)
-    result = [{"cocktail_id": id} for id in result]
-
+    drink_ids = set(drink_ids)
+    result = get_cocktails(drink_ids)
     return (json.dumps(result), 200, {"content_type": "application/json"})
 
 
@@ -73,6 +70,11 @@ def get_cocktails_by_ingredients():
 def get_cocktails_by_ids():
     ids = request.args.get("ids")
     ids = [int(id) for id in ids.split(",")]
+    cocktails = get_cocktails(ids)
+    return (json.dumps(cocktails), 200, {"content_type": "application/json"})
+
+
+def get_cocktails(ids):
     cocktails = []
     results = []
     with Session(engine) as session:
@@ -87,7 +89,7 @@ def get_cocktails_by_ids():
             cocktail["ingredients"] = ingredients
             results.append(cocktail)
 
-    return (json.dumps(results), 200, {"content_type": "application/json"})
+    return results
 
 
 if __name__ == "__main__":
