@@ -3,7 +3,7 @@ import json
 
 from db import engine
 from flask import Flask, request
-from models import Ingredient
+from models import Cocktail, Ingredient
 from sqlmodel import Session
 
 app = Flask(__name__)
@@ -23,7 +23,7 @@ def get_ingredients():
 
 
 @app.route("/cocktails")
-def get_cocktails():
+def get_cocktails_by_ingredients():
     ids = request.args.get("ids")
     count = request.args.get("count")
     ids = [int(id) for id in ids.split(",")]
@@ -67,6 +67,27 @@ def get_cocktails():
     result = [{"cocktail_id": id} for id in result]
 
     return (json.dumps(result), 200, {"content_type": "application/json"})
+
+
+@app.route("/drinks")
+def get_cocktails_by_ids():
+    ids = request.args.get("ids")
+    ids = [int(id) for id in ids.split(",")]
+    cocktails = []
+    results = []
+    with Session(engine) as session:
+        for id in ids:
+            cocktail = session.query(Cocktail).get(id)
+            if cocktail:
+                cocktails.append(cocktail)
+
+        for cocktail in cocktails:
+            ingredients = [ing.dict() for ing in cocktail.ingredients]
+            cocktail = cocktail.dict()
+            cocktail["ingredients"] = ingredients
+            results.append(cocktail)
+
+    return (json.dumps(results), 200, {"content_type": "application/json"})
 
 
 if __name__ == "__main__":
