@@ -26,11 +26,11 @@ def get_ingredients():
 def get_cocktails():
     ids = request.args.get("ids")
     count = request.args.get("count")
-    ids = [int(i) for i in ids.split(",")]
-    ingredients = ids
+    ids = [int(id) for id in ids.split(",")]
     max_add = int(count)
-    total = len(ingredients) + max_add
+    total = len(ids) + max_add
     result = []
+
     query = """
     WITH CTE1 AS (
     SELECT cocktail_id, COUNT(*) all_ing
@@ -49,8 +49,8 @@ def get_cocktails():
     ORDER BY listed_ingredients desc;
     """
 
-    for quantity in range(len(ingredients)):
-        combinations = itertools.combinations(set(ingredients), quantity + 1)
+    for quantity in range(len(ids)):
+        combinations = itertools.combinations(set(ids), quantity + 1)
         for subset in combinations:
             with Session(engine) as session:
                 values = session.execute(
@@ -67,27 +67,6 @@ def get_cocktails():
     result = [{"cocktail_id": id} for id in result]
 
     return (json.dumps(result), 200, {"content_type": "application/json"})
-
-
-@app.route("/drinks")
-def drinks():
-    ids = request.args.get("ids")
-    return json.dumps(
-        [
-            {
-                "name": "Mohito",
-                "id": 2,
-                "image_link": "./images/test.jpg",
-                "ingridients": ["Vodka", "Sprite", "Lemon"],
-            },
-            {
-                "name": str(ids),
-                "id": 3,
-                "image_link": "./images/test.jpg",
-                "ingridients": ["LOL", "HEHe"],
-            },
-        ]
-    )
 
 
 if __name__ == "__main__":
