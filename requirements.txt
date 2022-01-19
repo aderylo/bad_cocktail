@@ -9,3 +9,4 @@ pre-commit>=2.8.2
 kaggle
 psycopg2-binary>=2.9.3
 flask>=2.0.2
+python-dotenv==0.19.2

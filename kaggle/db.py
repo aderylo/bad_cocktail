@@ -2,6 +2,9 @@ import os
 
 from sqlalchemy import create_engine
 from sqlmodel import SQLModel
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
 
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PWD = os.getenv("POSTGRES_PWD")
@@ -10,7 +13,6 @@ POSTGRES_PORT = os.getenv("POSTGRES_PORT")
 DB_NAME = "bd"
 
 db_url = f"postgresql://{POSTGRES_USER}:{POSTGRES_PWD}@{POSTGRES_HOST}/{DB_NAME}"
-db_url = f"postgresql://scott:tiger@lkdb/bd"
 
 engine = create_engine(db_url)
 
