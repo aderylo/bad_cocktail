@@ -60,7 +60,7 @@ def save_data(data: pd.DataFrame):
                     name=drink_dict["strDrink"],
                     instructions=drink_dict["strInstructions"],
                     category=drink_dict["strCategory"],
-                    phot=drink_dict["strDrinkThumb"],
+                    photo=drink_dict["strDrinkThumb"],
                     glassId=glasses[glasses["name"] == drink_dict["strGlass"]][
                         "id"
                     ].values.tolist()[0],
