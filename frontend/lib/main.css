@@ -1,0 +1,139 @@
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+}
+
+.bg-main {
+  background-color: chocolate;
+}
+
+.bg-supplementary {
+  background-color: rgb(255, 212, 148);
+}
+
+.bg-supplementary-dark {
+  background-color: rgb(253, 200, 121);
+}
+
+.text-supplementary-dark {
+  color: rgb(253, 200, 121);
+}
+
+.text-main {
+  color: chocolate;
+}
+
+img {
+  object-fit: cover;
+  border-radius: 2%;
+  padding: 0 !important;
+  height: min-content;
+}
+
+.search-btn:hover {
+  background-color: chocolate;
+  border-color: chocolate;
+  color: rgb(253, 200, 121);
+}
+.search-btn {
+  color: chocolate;
+  border-color: chocolate;
+}
+
+a {
+  text-decoration: none;
+  color:rgb(253, 200, 121);
+}
+
+a:hover {
+  color:rgb(255, 212, 148);
+}
+
+input[type="number"] {
+  flex: 0.1 1 auto !important;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+}
+
+/* ======================================= Autocomplete part ============================= */
+.remove-icon {
+  transition: 0.3 ease;
+  opacity: 0;
+}
+.selected-item:hover .remove-icon {
+  opacity: 1;
+}
+.selected-item:hover {
+  border-color: red;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#selection {
+  column-count: 2;
+}
+.autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+  display: inline-block;
+}
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+input[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+}
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #d4d4d4;
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #e9e9e9;
+}
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: DodgerBlue !important;
+  color: #ffffff;
+}
+/* ================================================== End of autocomplete part ======================= */
+
+@media (min-width: 768px) {
+  .card-header {
+    width: 160px;
+  }
+}

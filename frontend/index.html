@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Miksolog</title>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+
+  <!-- Bootstrap core CSS -->
+  <link href="./lib/bootstrap.min.css" rel="stylesheet">
+  <link href="./lib/main.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/7d53bc1718.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body class="bg-supplementary">
+
+  <div class="modal fade" id="drinkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-title" id="exampleModalLabel">Mohito</h2>
+            <button type="button" class="close btn" data-bs-dismiss="modal" data-bs-target="drinkModal"
+              aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body container justify-content-center">
+          <div class="row">
+            <div class="col-sm-8">
+              <h4>Recipe:</h4>
+              <div id="modal-recipe">1. Fill a rocks glass with ice 2.add white creme de cacao and vodka 3.stir</div>
+              <h4 class="mt-2">Ingridients:</h4>
+              <ul id="modal-ing">
+              </ul>
+              <h5>Glassware:</h5>
+              <span id="modal-glassware">High Glass</span>
+            </div>
+            <img class="col-6 col-sm-4 offset-3 offset-sm-0 mt-3 mt-sm-0"
+              src="https://www.thecocktaildb.com/images/media/drink/xxyywq1454511117.jpg" alt="Drink image"
+              id="modal-img">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+            data-bs-target="drinkModal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="bg-main">
+    <div class="collapse bg-main" id="navbarHeader">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-8 col-md-7 py-4">
+            <h4 class="text-white">About</h4>
+            <p class="text-light">Project created as part of the Databases course at Univerity of Warsaw.<br><br>
+              Icons downloaded from <a href="https://fontawesome.com/license">FontAwesome</a>.
+            </p>
+          </div>
+          <div class="col-sm-4 offset-md-1 py-4">
+            <h4 class="text-white">Contact us:</h4>
+            <ul class="list-unstyled">
+              <li><a href="https://www.linkedin.com/in/adamderylo/">Adam Deryło</a></li>
+              <li><a href="https://www.linkedin.com/in/marcin-olko">Marcin Olko</a></li>
+              <li><a href="mailto:marcin.olko@gmail.com">Send an email!</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="navbar navbar-dark shadow-smbg-main">
+      <div class="container">
+        <a href="https://students.mimuw.edu.pl/~mo430007/miksolog/" class="navbar-brand d-flex align-items-center">
+          <i class='fas fa-cocktail m-1'></i>
+          <strong>Miksolog</strong>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader"
+          aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="bg-supplementary-dark">
+      <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+          <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Search for a drink!</h1>
+            <p class="lead">Give us components you own, and count of how many products you are willing to buy more and
+              we'll help you find a drink that might interest you:</p>
+            <form class="input-group my-2 my-lg-0" autocomplete="off">
+              <input class="form-control mr-sm-2" type="search" placeholder="Component Name" aria-label="Search"
+                id="component-search">
+              <input class="form-control input-number" type="number" value="0" min="0" max="10" id="component-count">
+            </form>
+            <ul class="list-unstyled mb-2 mt-4" id="selection">
+            </ul>
+            <button class="btn  my-2 my-sm-0 search-btn" id="search-btn" type="submit">Search!</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="album py-5">
+      <div class="container">
+
+        <div class="row row-cols-1 g-3" id="drink-list">
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="text-white py-2 bg-main position-fixed fixed-bottom">
+    <div class="container">
+      <p class="mb-0">&copy; Adam Deryło & Marcin Olko</p>
+    </div>
+  </footer>
+
+  <template id="card-template">
+    <div class="col mx-auto col-xl-8 col-lg-10" id="drink-{id}" type="button" data-bs-toggle="modal"
+      data-bs-target="#drinkModal">
+      <div class="card flex-md-row mb-4 box-shadow h-md-200">
+        <h3 class="card-header mb-0 text-dark">
+          {name}
+        </h3>
+        <div class="card-body p-0">
+          <div class="card-text p-3 d-flex flex-column justify-content-between">
+            <div>
+              <h6>Ingredients</h1>
+                <ul class="ing-list"></ul>
+            </div>
+            <!-- <div>Garnish: Sugar, Mint, Lemon</div> -->
+          </div>
+        </div>
+        <img class="card-img-right flex-center d-none d-md-block" alt="Drink photo" style="width: 200px; height: 200px;"
+          src="{image_link}">
+      </div>
+    </div>
+  </template>
+
+  <script src="./lib/bootstrap.bundle.min.js"></script>
+  <script src="./lib/main.js"></script>
+</body>
+
+</html>
