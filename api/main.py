@@ -53,18 +53,15 @@ def get_cocktails_by_ingredients():
     """
 
     with Session(engine) as session:
-        for quantity in range(len(ingredient_ids)):
-            combinations = itertools.combinations(set(ingredient_ids), quantity + 1)
-            for subset in combinations:
-                values = session.execute(
-                    query,
-                    {
-                        "total": total,
-                        "max_additional_ing": max_add,
-                        "essential": tuple(subset),
-                    },
-                )
-                drink_ids = drink_ids + [value["cocktail_id"] for value in values]
+        values = session.execute(
+            query,
+            {
+                "total": len(ingredient_ids),
+                "max_additional_ing": max_add,
+                "essential": tuple(ingredient_ids),
+            },
+        )
+        drink_ids = drink_ids + [value["cocktail_id"] for value in values]
 
     drink_ids = set(drink_ids)
     result = get_cocktails(drink_ids)
