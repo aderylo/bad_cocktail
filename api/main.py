@@ -1,4 +1,3 @@
-import itertools
 import json
 
 from db import engine
@@ -26,40 +25,34 @@ def get_ingredients():
 def get_cocktails_by_ingredients():
     max_add = int(request.args.get("count"))
     ingredient_ids = [int(id) for id in request.args.get("ids").split(",")]
-    total = len(ingredient_ids) + max_add
     drink_ids = []
 
     query = """
     WITH CTE1 AS (
-    SELECT cocktail_id, COUNT(*) all_ing
-    FROM cocktail_ingredients
-    GROUP BY cocktail_id
-    HAVING COUNT(*) < :total),
-     CTE2 AS (
-         SELECT cocktail_id, COUNT(*) listed_ingredients
-         FROM cocktail_ingredients
-         WHERE ingredient_id IN :essential
-         GROUP BY cocktail_id)
-    SELECT CTE2.cocktail_id
-    FROM CTE2
-            LEFT JOIN CTE1 ON CTE1.cocktail_id = CTE2.cocktail_id
-    WHERE all_ing - listed_ingredients <= :max_additional_ing
-    ORDER BY listed_ingredients desc;
+        SELECT cocktail_id, COUNT(*) free_ing
+        from cocktail_ingredients
+        WHERE ingredient_id in :essential
+        GROUP BY cocktail_id),
+        CTE2 AS (
+            SELECT cocktail_id, COUNT(*) total_ing
+            FROM cocktail_ingredients
+            WHERE cocktail_id IN (SELECT cocktail_id FROM CTE1)
+            GROUP BY cocktail_id)
+    SELECT CTE1.cocktail_id
+    FROM CTE1
+            LEFT JOIN CTE2 ON CTE1.cocktail_id = CTE2.cocktail_id
+    WHERE (CTE2.total_ing - CTE1.free_ing) <= :max_additional_ing;
     """
 
     with Session(engine) as session:
-        for quantity in range(len(ingredient_ids)):
-            combinations = itertools.combinations(set(ingredient_ids), quantity + 1)
-            for subset in combinations:
-                values = session.execute(
-                    query,
-                    {
-                        "total": total,
-                        "max_additional_ing": max_add,
-                        "essential": tuple(subset),
-                    },
-                )
-                drink_ids = drink_ids + [value["cocktail_id"] for value in values]
+        values = session.execute(
+            query,
+            {
+                "max_additional_ing": max_add,
+                "essential": tuple(ingredient_ids),
+            },
+        )
+        drink_ids = drink_ids + [value["cocktail_id"] for value in values]
 
     drink_ids = set(drink_ids)
     result = get_cocktails(drink_ids)

@@ -1,7 +1,7 @@
 
-const ing_endpoint = "https://students.mimuw.edu.pl/~ad432952/mixology/bad_cocktail/api/app.cgi/ingredients";
-const drinks_search_endpoint = "https://students.mimuw.edu.pl/~ad432952/mixology/bad_cocktail/api/app.cgi/cocktails?";
-const drink_endpoint = "https://students.mimuw.edu.pl/~ad432952/mixology/bad_cocktail/api/app.cgi/drinks?";
+const ing_endpoint = "https://students.mimuw.edu.pl/~ad432952/deploy/bad_cocktail/api/app.cgi/ingredients";
+const drinks_search_endpoint = "https://students.mimuw.edu.pl/~ad432952/deploy/bad_cocktail/api/app.cgi/cocktails?";
+const drink_endpoint = "https://students.mimuw.edu.pl/~ad432952/deploy/bad_cocktail/api/app.cgi/drinks?";
 
 
 
@@ -15,9 +15,9 @@ class Components_selector {
     possible_items = {};
     all_items;
     id_map = {};
-    
+
     constructor() {}
-    
+
     async init() {
         var components = await getComponents();
         this.possible_items = {};
@@ -36,14 +36,14 @@ class Components_selector {
         }
         return out;
     }
-    
+
     addEntity(entity) {
         if(!(entity in this.possible_items)) return;
         this.selected_items[entity] = this.possible_items[entity];
         delete this.possible_items[entity];
         this.resetList();
     }
-    
+
     removeEntity(entity) {
         if(!(entity in this.selected_items)) return;
         this.possible_items[entity] = this.selected_items[entity];
@@ -58,7 +58,7 @@ class Components_selector {
         }
         this.resetList();
     }
-    
+
     resetList() {
         document.getElementById("selection").innerHTML = "";
         for (var el of Object.keys(this.selected_items)) {
@@ -276,7 +276,7 @@ async function renderDrinkInfo(id) {
     }
     document.getElementById("modal-img").src = drinkInfo.photo;
     document.getElementById("modal-glassware").src = drinkInfo.glassware;
-    
+
     $("#drinkModal").modal("show");
     loading_entity.hidden = true;
 }
