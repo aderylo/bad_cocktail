@@ -26,25 +26,30 @@ def get_ingredients():
 def get_cocktails_by_ingredients():
     max_add = int(request.args.get("count"))
     ingredient_ids = [int(id) for id in request.args.get("ids").split(",")]
-    total = len(ingredient_ids) + max_add
+    total = len(ingredient_ids)
     drink_ids = []
 
     query = """
-    WITH CTE1 AS (
-    SELECT cocktail_id, COUNT(*) all_ing
-    FROM cocktail_ingredients
-    GROUP BY cocktail_id
-    HAVING COUNT(*) < :total),
-     CTE2 AS (
-         SELECT cocktail_id, COUNT(*) listed_ingredients
+    with cte as (
+    SELECT DISTINCT cocktail_id from cocktail_ingredients where ingredient_id in :essential),
+     cte1 as (
+         SELECT cocktail_id
          FROM cocktail_ingredients
-         WHERE ingredient_id IN :essential
-         GROUP BY cocktail_id)
-    SELECT CTE2.cocktail_id
-    FROM CTE2
-            LEFT JOIN CTE1 ON CTE1.cocktail_id = CTE2.cocktail_id
-    WHERE all_ing - listed_ingredients <= :max_additional_ing
-    ORDER BY listed_ingredients desc;
+         where ingredient_id in :essential
+         GROUP BY cocktail_id
+         HAVING COUNT(*) = :total),
+     cte2 as (
+         SELECT cocktail_id
+         FROM cocktail_ingredients
+         WHERE cocktail_id in (SELECT * FROM CTE)
+           AND ingredient_id not in :essential
+         GROUP BY cocktail_id
+         HAVING COUNT(*) <= :max_additional_ing)
+    SELECT *
+    from cte1
+    UNION
+    SELECT *
+    FROM cte2;
     """
 
     with Session(engine) as session:
