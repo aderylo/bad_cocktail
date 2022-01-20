@@ -1,15 +1,20 @@
 
-const ing_endpoint = "https://students.mimuw.edu.pl/~mo430007/bad_cocktail/api/app.cgi/ingredients";
-const drinks_search_endpoint = "https://students.mimuw.edu.pl/~mo430007/flask/app.cgi/drinks?";
-const drink_endpoint = "https://students.mimuw.edu.pl/~mo430007/flask/app.cgi/drink?";
+const ing_endpoint = "https://students.mimuw.edu.pl/~ad432952/mixology/bad_cocktail/api/app.cgi/ingredients";
+const drinks_search_endpoint = "https://students.mimuw.edu.pl/~ad432952/mixology/bad_cocktail/api/app.cgi/cocktails?";
+const drink_endpoint = "https://students.mimuw.edu.pl/~ad432952/mixology/bad_cocktail/api/app.cgi/drinks?";
+
+
+
+var loading_entity = document.getElementById("loading");
 
 /* ==================================================== Autocomplete section ===================================== */
 
 
 class Components_selector {
     selected_items = {};
-    possible_items;
+    possible_items = {};
     all_items;
+    id_map = {};
     
     constructor() {}
     
@@ -18,6 +23,7 @@ class Components_selector {
         this.possible_items = {};
         for (var component of components) {
             this.possible_items[component.name] = (component.id);
+            this.id_map[component.id] = component.name;
         }
         this.all_items = this.possible_items;
         autocomplete(document.getElementById('component-search'), Object.keys(this.possible_items));
@@ -222,6 +228,7 @@ async function sendSearchform() {
 }
 
 async function search() {
+    loading_entity.hidden = false;
     var response = await sendSearchform();
     document.getElementById("drink-list").innerHTML = "";
     for(var drink of response) {
@@ -229,14 +236,15 @@ async function search() {
         new_card.innerHTML = populateTemplate(document.getElementById("card-template").innerHTML, drink);
         document.getElementById("drink-list").appendChild(new_card);
         var ing_list = new_card.getElementsByClassName("ing-list")[0];
-        for(var ing of drink.ingridients) {
+        for(var ing of drink.ingredients) {
             var new_ing = document.createElement("li");
-            new_ing.innerHTML = ing
+            new_ing.innerHTML = comp_sel.id_map[ing.ingredient_id];
             ing_list.appendChild(new_ing);
         }
         new_card.addEventListener("click",drink_click(drink.id));
     }
     comp_sel.resetItems();
+    loading_entity.hidden = true;
 }
 
 document.getElementById("search-btn").addEventListener("click", search);
@@ -244,8 +252,8 @@ document.getElementById("search-btn").addEventListener("click", search);
 async function getDrinkInfo(id) {
     var out;
     var search_params = new URLSearchParams();
-    search_params.append("id", id)
-    var lol = await fetch(drink_endpoint, {method: 'GET',headers: {
+    search_params.append("ids", id)
+    var lol = await fetch(drink_endpoint + search_params.toString(), {method: 'GET',headers: {
             'Content-Type': 'application/json'
             }
         });
@@ -254,18 +262,23 @@ async function getDrinkInfo(id) {
 }
 
 async function renderDrinkInfo(id) {
+    loading_entity.hidden = false;
     var drinkInfo = await getDrinkInfo(id);
+    drinkInfo = drinkInfo[0];
     document.getElementById("modal-title").innerHTML = drinkInfo.name;
-    document.getElementById("modal-recipe").innerHTML = drinkInfo.recipe;
+    document.getElementById("modal-recipe").innerHTML = drinkInfo.instructions;
     var ing_list = document.getElementById("modal-ing");
     ing_list.innerHTML = "";
-    for(var ing of drinkInfo.ingridients) {
+    for(var ing of drinkInfo.ingredients) {
         var new_ing = document.createElement("li");
-        new_ing.innerHTML = ing
+        new_ing.innerHTML = comp_sel.id_map[ing.ingredient_id] + " - " + ing.measure;
         ing_list.appendChild(new_ing);
     }
-    document.getElementById("modal-img").src = drinkInfo.image_link;
+    document.getElementById("modal-img").src = drinkInfo.photo;
     document.getElementById("modal-glassware").src = drinkInfo.glassware;
+    
+    $("#drinkModal").modal("show");
+    loading_entity.hidden = true;
 }
 
 function drink_click(id) {
@@ -273,3 +286,5 @@ function drink_click(id) {
         renderDrinkInfo(id);
     };
 }
+
+loading_entity.hidden = true;
