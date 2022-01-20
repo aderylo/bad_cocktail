@@ -41,3 +41,7 @@ POSTGRES_USER=scott
 POSTGRES_PWD=tiger
 POSTGRES_HOST=lkdb
 ```
+
+### Modifying endpoints or queries
+
+If you want to use your own modified wersions of api, you need to specify your endpoints in `lib/main.js` file by changing ing_endpoint, drinks_search_endpoint, and drink_endpoint with your own http adresses respectivle.
