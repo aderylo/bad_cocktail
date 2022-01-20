@@ -1,7 +1,7 @@
 import itertools
 import json
 
-from db.db import engine
+from db import engine
 from flask import Flask, request
 from models import Cocktail, Ingredient
 from sqlmodel import Session
